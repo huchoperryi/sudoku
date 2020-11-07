@@ -130,7 +130,7 @@ class SudokuField():
 			
 			
 if __name__ == '__main__':
-	
+	# Set Probrem
 	initial = [[0,0,0, 0,0,0, 9,0,0],
 						 [0,0,0, 4,9,0, 0,0,6],
 						 [0,9,6, 0,0,0, 0,4,0],
