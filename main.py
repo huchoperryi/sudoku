@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 class SudokuField():
 	
@@ -129,6 +130,38 @@ class SudokuField():
 		return fixed_value
 			
 			
+def input_problem():
+	
+	problem = [[0] * 9 for i in range(9)]
+	print('Set problem')
+	
+	input_line = [input() for i in range(9)]
+	
+	for i in range(9):
+		digit = 0
+		j = 0
+		
+		#入力桁数まで または 9桁まで
+		while digit < len(input_line[i]) and j < 9:
+			
+			#0-9ならprobremに代入
+			if '0' <= input_line[i][digit] <= '9':
+				problem[i][j] = int(input_line[i][digit])
+				j = j + 1
+				digit = digit + 1
+			#空白は無視
+			elif input_line[i][digit] == ' ':
+				digit = digit + 1
+			
+			#それ以外(文字等)は0にする
+			else:
+				problem[i][j] = 0
+				j = j + 1
+				digit = digit + 1
+			
+	return problem
+	
+
 if __name__ == '__main__':
 	# Set Probrem
 	initial = [[0,0,0, 0,0,0, 9,0,0],
@@ -140,9 +173,15 @@ if __name__ == '__main__':
 						 [9,6,0, 1,0,0, 4,0,0],
 						 [8,5,4, 0,7,0, 0,2,1],
 						 [0,3,0, 0,0,0, 8,0,0]]
-						 
+						
+	initial = input_problem()
+	
 	field = SudokuField(initial)
 	
+	if field == 0:
+		print('input error')
+		sys.exit()
+		
 	field.display()
 	
 	#field.display_with_candidate()
