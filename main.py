@@ -158,7 +158,13 @@ def input_problem():
 				problem[i][j] = 0
 				j = j + 1
 				digit = digit + 1
-			
+	print('Initial set is:')
+	for i in range(9):
+		for j in range(9):
+			print(problem[i][j],end='')
+		print()
+	ans = input("Input OK? y/n")
+
 	return problem
 	
 
