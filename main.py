@@ -163,7 +163,12 @@ def input_problem():
 		for j in range(9):
 			print(problem[i][j],end='')
 		print()
-	ans = input("Input OK? y/n")
+	ans = input('Input OK? y/n')
+
+	if ans = 'y' or ans = 'Y':
+		print('solve ...')
+	else:
+		input('Input reinput row number:')
 
 	return problem
 	
