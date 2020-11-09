@@ -164,7 +164,7 @@ def input_problem():
 			print(problem[i][j],end='')
 		print()
 	ans = input('Input OK? y/n')
-
+	
 	if ans = 'y' or ans = 'Y':
 		print('solve ...')
 	else:
