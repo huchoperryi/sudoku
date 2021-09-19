@@ -58,34 +58,34 @@ class SudokuField():
 	
 	def __init__(self):
 		print('set field')
-		#self.raws = [[None] * 9] * 9
-		self.raws =[]
+		#self.rows = [[None] * 9] * 9
+		self.rows =[]
 		self.cols = []
 		self.areas = []
 		
 		for i in range(9):
-			raw = []
+			row = []
 			for j in range(9):
-				raw.append(SudokuCell())
-			self.raws.append(raw)
+				row.append(SudokuCell())
+			self.rows.append(row)
 		
 		for i in range(9):
 			col = []
 			area = []
 			for j in range(9):
-				#self.cols[i][j] = self.raws[j][i]
-				col.append(self.raws[j][i])
+				#self.cols[i][j] = self.rows[j][i]
+				col.append(self.rows[j][i])
 				
 				wk_i = i // 3 * 3 + j // 3
 				wk_j = i % 3 * 3 + j % 3
-				area.append(self.raws[wk_i][wk_j])
+				area.append(self.rows[wk_i][wk_j])
 				
 			self.cols.append(col)
 			self.areas.append(area)
 		"""
 		for i in range(9):
 			for j in range(9):
-				self.raws[i][j].SetValue(i * 9 + j + 1)
+				self.rows[i][j].SetValue(i * 9 + j + 1)
 		"""
 	def CutOtherJudge(self, block, no, value):
 		
@@ -93,18 +93,18 @@ class SudokuField():
 			
 			block[i]
 	
-	def CutJudge(self, raw, col):
+	def CutJudge(self, row, col):
 		
-		if self.raws[raw][col].value != ' ':
-			idx = self.raws[raw][col].value - 1
-			area = raw // 3 * 3 + col // 3
-			add = raw % 3 * 3 + col % 3
+		if self.rows[row][col].value != ' ':
+			idx = self.rows[row][col].value - 1
+			area = row // 3 * 3 + col // 3
+			add = row % 3 * 3 + col % 3
 		
 		#if idx != ' ':
 			for i in range(9):
 				if i !=col:
-					self.raws[raw][i].DelJudge(idx)
-				if i != raw:
+					self.rows[row][i].DelJudge(idx)
+				if i != row:
 					self.cols[col][i].DelJudge(idx)
 				if i != add:
 					self.areas[area][i].DelJudge(idx)
@@ -121,7 +121,7 @@ class SudokuField():
 		count = 0
 		for i in range(9):
 			for j in range(9):
-				result = self.raws[i][j].FixCheck()
+				result = self.rows[i][j].FixCheck()
 				if result == 0:
 					count += 1
 		#print('{} cell fixed'.format(count))
@@ -160,7 +160,7 @@ class SudokuField():
 		for i in range(10):
 			self.CutJudgeAll()
 			for i in range(9):
-				self.ScanBlock(self.raws[i])
+				self.ScanBlock(self.rows[i])
 				self.ScanBlock(self.cols[i])
 				self.ScanBlock(self.areas[i])
 				
@@ -169,7 +169,7 @@ class SudokuField():
 			#self.ShowWithCandidate()
 		
 		
-	def SetTask(self):
+	def SetTask(self, 
 		task =	[[0,0,0, 0,0,0, 9,0,0],
 						 [0,0,0, 4,9,0, 0,0,6],
 						 [0,9,6, 0,0,0, 0,4,0],
@@ -179,39 +179,39 @@ class SudokuField():
 						 [9,6,0, 1,0,0, 4,0,0],
 						 [8,5,4, 0,7,0, 0,2,1],
 						 [0,3,0, 0,0,0, 8,0,0]]
-						
+				):
 		for i in range(9):
 			for j in range(9):
-				self.raws[i][j].SetValue(task[i][j])
+				self.rows[i][j].SetValue(task[i][j])
 				
 		
 	def show(self):
 		
-		for raw in range(9):
+		for row in range(9):
 			for col in range(9):
-				value = self.raws[raw][col].value
+				value = self.rows[row][col].value
 				print('{}'.format(value), end='')
 				if col % 3 == 2 and col != 8:
 					print('|', end='')
 			print('')
-			if raw % 3 == 2 and raw != 8:
+			if row % 3 == 2 and row != 8:
 				print('---+---+---')
 				
 	def ShowWithCandidate(self):
 		print('Show with candidate')
 		for i in range(9):
 			for j in range(9):
-				if self.raws[i][j].is_fixed:
+				if self.rows[i][j].is_fixed:
 					fix = 'F'
 				else:
 					fix = ' '
-				print('*{}{}|'.format(self.raws[i][j].value, fix), end='')
+				print('*{}{}|'.format(self.rows[i][j].value, fix), end='')
 			print('')
 			for jr in range(0,9,3):
 				for j in range(9):
 					str_judge = ''
 					for k in range(3):
-						if self.raws[i][j].judge[jr+k]:
+						if self.rows[i][j].judge[jr+k]:
 							str_judge = str_judge + str(jr+k+1)
 						else:
 							str_judge = str_judge + '.'

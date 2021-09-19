@@ -13,12 +13,17 @@ class MainWindow(QWidget):
         style = "border: 1px solid black; " \
             + "background-color : skyblue;"
         self.MainFrame = QHBoxLayout()
-        self.InputFrame = QGridLayout()
+        self.InputFrame = QVBoxLayout()
+        self.TaskFrame = QGridLayout()
+        self.WorkFrame = QGridLayout()
         self.grid = QGridLayout()
+        self.InputFrame.addLayout(self.TaskFrame)
+        self.InputFrame.addLayout(self.WorkFrame)
         self.MainFrame.addLayout(self.InputFrame)
         self.MainFrame.addLayout(self.grid)
 
-        self.SetInputGrid()
+        self.SetTaskGrid()
+        self.SetWorkGrid()
 
 
 
@@ -31,7 +36,7 @@ class MainWindow(QWidget):
                 indexs = []
                 for i in range(9):
 
-                    text = str(col)
+                    text = str(i + 1)
                     index = QtWidgets.QLabel(self)
                     index.setText(text)
                     index.setFont(QtGui.QFont('Ricty Diminished Discord',10))
@@ -79,13 +84,91 @@ class MainWindow(QWidget):
 
         #self.cells[0].setStyleSheet("border: 1px solid red;")
 
-    def SetInputGrid(self):
+    def SetTaskGrid(self):
 
         #self.input_grid = QGridLayout(self)
-        #self.InputFrame.addLayout(self.input_grid)
-        self.inputs = []
-        self.input = QLineEdit(self)
-        self.InputFrame.addWidget(self.input, 0, 0)
+        #self.WorkFrame.addLayout(self.input_grid)
+        self.tasks = []
+        for row in range(9):
+            tmp_tasks = []
+            for col in range(9):
+                tmp_task = QLineEdit(self)
+                tmp_task.setFixedSize(18,18)
+                tmp_task.senderSignalIndex = row * 10 + col
+                tmp_task.returnPressed.connect(self.TaskReturn)
+                tmp_tasks.append(tmp_task)
+                self.TaskFrame.addWidget(tmp_task, row, col, 1, 1)
+            self.tasks.append(tmp_tasks)
+        task_label = QLabel()
+        task_label.setText('TaskGrid')
+        self.TaskFrame.addWidget(task_label, 9, 0, 1, 3)
+        self.solve_button = QPushButton()
+        self.solve_button.setText('Solve')
+        self.solve_button.clicked.connect(self.SolveTask)
+        self.TaskFrame.addWidget(self.solve_button, 9, 3, 1, 3)
+        self.reset_button = QPushButton()
+        self.reset_button.setText('RESET')
+        self.reset_button.clicked.connect(self.ResetTask)
+        self.TaskFrame.addWidget(self.reset_button, 9, 6, 1, 3)
+
+
+    def TaskReturn(self):
+
+        send_obj = self.sender()
+        row = send_obj.senderSignalIndex // 10
+        col = send_obj.senderSignalIndex % 10
+
+        next_row = (row + (col + 1) // 9) % 9
+        next_col = (col + 1) % 9
+
+        value = send_obj.text()
+        #print('next_row: {} next_col: {}'.format(next_row, next_col))
+        self.tasks[next_row][next_col].setFocus()
+        
+        self.works[row][col].setText(value)
+
+
+    def SetWorkGrid(self):
+        # self.works : list of QLineEdit
+        self.works = []
+        for row in range(9):
+            tmp_works = []
+            for col in range(9):
+                tmp_work = QLineEdit(self)
+                tmp_work.setFixedSize(18,18)
+                tmp_work.senderSignalIndex = row * 10 + col
+                tmp_work.returnPressed.connect(self.WorkReturn)
+                tmp_works.append(tmp_work)
+                self.WorkFrame.addWidget(tmp_work, row, col, 1, 1)
+            self.works.append(tmp_works)
+        work_label = QLabel()
+        work_label.setText('WorkGrid')
+        self.WorkFrame.addWidget(work_label, 9, 0, 1, 5)
+        self.work_button = QPushButton()
+        self.work_button.setText('work_button')
+        self.work_button.clicked.connect(self.WorkProcess)
+        self.WorkFrame.addWidget(self.work_button, 9, 5, 1, 4)
+
+
+    def WorkProcess(self):
+        
+        for row in range(9):
+            for col in range(9):
+                print(self.works[row][col].text(), end='')
+            print('')
+
+
+    def WorkReturn(self):
+
+        send_obj = self.sender()
+        row = send_obj.senderSignalIndex // 10
+        col = send_obj.senderSignalIndex % 10
+        #print('row: {} col: {}'.format(row, col))
+
+        next_row = (row + (col + 1) // 9) % 9
+        next_col = (col + 1) % 9
+        #print('next_row: {} next_col: {}'.format(next_row, next_col))
+        self.works[next_row][next_col].setFocus()
 
 
     def output(self):
