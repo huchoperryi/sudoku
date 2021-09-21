@@ -27,50 +27,69 @@ class Window(SudokuWindow.MainWindow):
         self.SetTaskWorkGUI(self.works)
 
 
-
-        self.SetTaskWorkGUI(self.works)
-
-
     def SetTaskWorkGUI(self, input_grid):
         
         for row in range(9):
             for col in range(9):
                 value = self.field.rows[row][col].value
+                if value == ' ':
+                    value = ''
                 input_grid[row][col].setText(str(value))
                 #self.tasks[row][col].setText(str(value))
                 #self.works[row][col].setText(str(value))
 
 
+    def ResetTask(self):
+        self.field.Reset()
+        self.SetTaskWorkGUI(self.tasks)
+        self.SetTaskWorkGUI(self.works)
+        print('ResetTask')
+        self.field.ShowWithCandidate()
+
 
     def ShowCandidate(self):
 
+        skyblue = 'background-color : skyblue'
+        grey = 'background-color : grey'
+        redborder = 'border: 1px solid red ; background-color : skyblue'
         for row in range(9):
             for col in range(9):
                 for index in range(9):
-                    if self.field.rows[row][col].judge[index]:
-                        self.cells[row][col][index].setStyleSheet("background-color : skyblue")
+                    if (self.field.rows[row][col].value == index + 1 and
+                        self.field.rows[row][col].is_fixed == True):
+                        self.cells[row][col][index].setStyleSheet(redborder)
+                    elif self.field.rows[row][col].judge[index]:
+                        self.cells[row][col][index].setStyleSheet(skyblue)
                     else:
-                        self.cells[row][col][index].setStyleSheet("background-color : grey")
+                        self.cells[row][col][index].setStyleSheet(grey)
 
     def SolveTask(self):
+        for row in range(9):
+            for col in range(9):
+
+                value = self.works[row][col].text()
+                if value == '':
+                    value = ' '
+
+                if (49 <= ord(value) and ord(value) <= 57):
+                    value = int(value)
+                    self.field.rows[row][col].SetValue(value)
+                    msg = 'set value row:{} col:{} value:{}'
+                    print(msg.format(row, col, value))
         self.field.Solve()
         self.SetTaskWorkGUI(self.works)
 
-    def ResetTask(self):
-
-        print('ResetTask')
-
 
     def TaskSet(self):
-        task = [[0,0,0, 0,0,0, 9,0,0],
-                [0,0,0, 4,9,0, 0,0,6],
-                [0,9,6, 0,0,0, 0,4,0],
-                [0,0,0, 0,8,0, 7,0,0],
-                [0,2,0, 0,3,7, 5,1,0],
-                [5,0,0, 0,2,0, 3,8,0],
-                [9,6,0, 1,0,0, 4,0,0],
-                [8,5,4, 0,7,0, 0,2,1],
-                [0,3,0, 0,0,0, 0,0,0]]
+        task = [[0,0,0, 0,0,0, 6,0,0],
+                [0,0,6, 0,1,0, 9,0,0],
+                [7,0,0, 8,2,0, 0,5,0],
+                [0,5,0, 0,4,0, 0,0,3],
+                [6,2,3, 1,0,7, 0,0,0],
+                [0,4,0, 0,5,0, 0,0,9],
+                [4,0,0, 5,3,0, 0,2,0],
+                [0,0,1, 0,6,0, 8,0,0],
+                [0,0,0, 0,0,0, 5,0,0]]
         return task
 
 

@@ -10,8 +10,9 @@ class MainWindow(QWidget):
         super(MainWindow, self).__init__(parent)
 
         #self.setStyleSheet('background-color:red;')
-        style = "border: 1px solid black; " \
-            + "background-color : skyblue;"
+        style = 'background-color : skyblue;'
+            #"border: 1px solid black; "
+
         self.MainFrame = QHBoxLayout()
         self.InputFrame = QVBoxLayout()
         self.TaskFrame = QGridLayout()
@@ -22,10 +23,26 @@ class MainWindow(QWidget):
         self.MainFrame.addLayout(self.InputFrame)
         self.MainFrame.addLayout(self.grid)
 
+        self.work_backs = []
+
+
+            
         self.SetTaskGrid()
         self.SetWorkGrid()
 
 
+        self.cell_backs = []
+
+        for i in range(81):
+            cell_back = QLabel(self)
+            cell_back.move(
+                243 + i % 9 * 54 + (i % 9) // 3 * 9,
+                9 + i // 9 * 54 + (i // 9) // 3 * 9
+                )
+            cell_back.setFixedSize(53,53)
+            cell_back.setStyleSheet('background-color : #9090c0')
+            self.cell_backs.append(cell_back)
+            #self.WorkFrame.addWidget(cell_back)
 
         # create 27 x 27 Labels and add to layout
         self.cells = []
@@ -71,7 +88,7 @@ class MainWindow(QWidget):
             borders.append(border)
 
 
-        self.button = QPushButton('execute', self)
+        self.button = QPushButton('Show data', self)
         #self.button.clicked.connect(self.output)
         self.button.clicked.connect(self.ShowCandidate)
 
@@ -88,6 +105,19 @@ class MainWindow(QWidget):
 
         #self.input_grid = QGridLayout(self)
         #self.WorkFrame.addLayout(self.input_grid)
+        self.task_backs = []
+
+        for i in range(9):
+            task_back = QLabel(self)
+            task_back.move(
+                9 + i % 3 * 75,
+                23 + i // 3 * 72
+                )
+            task_back.setFixedSize(74,71)
+            task_back.setStyleSheet('background-color : #9090c0')
+            self.task_backs.append(task_back)
+            #self.WorkFrame.addWidget(work_back)
+
         self.tasks = []
         for row in range(9):
             tmp_tasks = []
@@ -130,6 +160,22 @@ class MainWindow(QWidget):
 
     def SetWorkGrid(self):
         # self.works : list of QLineEdit
+
+        
+        self.work_backs = []
+
+        for i in range(9):
+            work_back = QLabel(self)
+            work_back.move(
+                9 + i % 3 * 75,
+                282 + i // 3 * 72
+                )
+            work_back.setFixedSize(74,71)
+            work_back.setStyleSheet('background-color : #9090c0')
+            self.work_backs.append(work_back)
+            #self.addWidget(work_back)
+        
+
         self.works = []
         for row in range(9):
             tmp_works = []
