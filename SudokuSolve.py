@@ -2,7 +2,11 @@ import numpy as np
 import sys
 
 class SudokuCell():
-	
+	"""
+	value: cell fixed value
+	is_fixed: 
+	judge: bool x 9
+	"""
 	
 	def __init__(self):
 		
@@ -57,6 +61,12 @@ class SudokuCell():
 class SudokuField():
 	
 	def __init__(self):
+		"""
+		rows: cells 9x9
+		cols: cells 9x9
+		areas: cells 9x9
+
+		"""
 		print('set field')
 		#self.rows = [[None] * 9] * 9
 		self.rows =[]
@@ -184,7 +194,16 @@ class SudokuField():
 			for j in range(9):
 				self.rows[i][j].SetValue(task[i][j])
 				
-		
+	def Reset(self):
+
+		for row in range(9):
+			for col in range(9):
+				self.rows[row][col].value = ' '
+				self.rows[row][col].is_fixed = False
+				self.rows[row][col].judge = [True, True, True,
+											 True, True, True,
+											 True, True, True]
+
 	def show(self):
 		
 		for row in range(9):
