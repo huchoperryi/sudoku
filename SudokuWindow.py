@@ -6,7 +6,7 @@ import sip
 import time
 
 class MainWindow(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None): # windowの初期生成
         super(MainWindow, self).__init__(parent)
 
         #self.setStyleSheet('background-color:red;')
@@ -36,7 +36,7 @@ class MainWindow(QWidget):
         for i in range(81):
             cell_back = QLabel(self)
             cell_back.move(
-                243 + i % 9 * 54 + (i % 9) // 3 * 9,
+                225 + i % 9 * 54 + (i % 9) // 3 * 9,
                 9 + i // 9 * 54 + (i // 9) // 3 * 9
                 )
             cell_back.setFixedSize(53,53)
@@ -101,7 +101,7 @@ class MainWindow(QWidget):
 
         #self.cells[0].setStyleSheet("border: 1px solid red;")
 
-    def SetTaskGrid(self):
+    def SetTaskGrid(self): # task入力欄の生成
 
         #self.input_grid = QGridLayout(self)
         #self.WorkFrame.addLayout(self.input_grid)
@@ -110,10 +110,10 @@ class MainWindow(QWidget):
         for i in range(9):
             task_back = QLabel(self)
             task_back.move(
-                9 + i % 3 * 75,
+                9 + i % 3 * 72,
                 23 + i // 3 * 72
                 )
-            task_back.setFixedSize(74,71)
+            task_back.setFixedSize(71,71)
             task_back.setStyleSheet('background-color : #9090c0')
             self.task_backs.append(task_back)
             #self.WorkFrame.addWidget(work_back)
@@ -130,24 +130,29 @@ class MainWindow(QWidget):
                 self.TaskFrame.addWidget(tmp_task, row, col, 1, 1)
             self.tasks.append(tmp_tasks)
         task_label = QLabel()
+        task_label.setFixedWidth(65)
         task_label.setText('TaskGrid')
         self.TaskFrame.addWidget(task_label, 9, 0, 1, 3)
         self.solve_button = QPushButton()
+        self.solve_button.setFixedWidth(65)
         self.solve_button.setText('Solve')
         self.solve_button.clicked.connect(self.SolveTask)
         self.TaskFrame.addWidget(self.solve_button, 9, 3, 1, 3)
         self.reset_button = QPushButton()
         self.reset_button.setText('RESET')
+        self.reset_button.setFixedWidth(65)
         self.reset_button.clicked.connect(self.ResetTask)
         self.TaskFrame.addWidget(self.reset_button, 9, 6, 1, 3)
 
 
-    def TaskReturn(self):
+    def TaskReturn(self): # task 入力欄でreturn入力時に実行
 
+        # sender().senderSignalIndexから入力欄の位置を判定
         send_obj = self.sender()
         row = send_obj.senderSignalIndex // 10
         col = send_obj.senderSignalIndex % 10
 
+        # 一つ右 右端なら1行下の左端へ移動
         next_row = (row + (col + 1) // 9) % 9
         next_col = (col + 1) % 9
 
@@ -157,8 +162,29 @@ class MainWindow(QWidget):
         
         self.works[row][col].setText(value)
 
+        self.SolveTask()
+        
 
-    def SetWorkGrid(self):
+
+    def GetList(self, cells): # task,workの値リストを返す
+
+        cell_values = []
+        for row in range(9):
+            cell_value = []
+            for col in range(9):
+                value = cells[row][col].text()
+                if (value == '' or value == ' '):
+                    value = 0
+                else:
+                    value = int(value)
+                cell_value.append(value)
+            cell_values.append(cell_value)
+        return cell_values
+
+
+
+
+    def SetWorkGrid(self): # work入力欄の生成
         # self.works : list of QLineEdit
 
         
@@ -167,10 +193,10 @@ class MainWindow(QWidget):
         for i in range(9):
             work_back = QLabel(self)
             work_back.move(
-                9 + i % 3 * 75,
+                9 + i % 3 * 72,
                 282 + i // 3 * 72
                 )
-            work_back.setFixedSize(74,71)
+            work_back.setFixedSize(71,71)
             work_back.setStyleSheet('background-color : #9090c0')
             self.work_backs.append(work_back)
             #self.addWidget(work_back)
@@ -188,15 +214,17 @@ class MainWindow(QWidget):
                 self.WorkFrame.addWidget(tmp_work, row, col, 1, 1)
             self.works.append(tmp_works)
         work_label = QLabel()
+        work_label.setFixedWidth(65)
         work_label.setText('WorkGrid')
-        self.WorkFrame.addWidget(work_label, 9, 0, 1, 5)
+        self.WorkFrame.addWidget(work_label, 9, 0, 1, 3)
         self.work_button = QPushButton()
+        self.work_button.setFixedWidth(65)
         self.work_button.setText('work_button')
         self.work_button.clicked.connect(self.WorkProcess)
-        self.WorkFrame.addWidget(self.work_button, 9, 5, 1, 4)
+        self.WorkFrame.addWidget(self.work_button, 9, 3, 1, 3)
 
 
-    def WorkProcess(self):
+    def WorkProcess(self): # 
         
         for row in range(9):
             for col in range(9):
@@ -204,20 +232,22 @@ class MainWindow(QWidget):
             print('')
 
 
-    def WorkReturn(self):
+    def WorkReturn(self): # work入力欄でreturn入力時に実行
 
+        # sender().senderSignalIndexから入力欄の位置を判定
         send_obj = self.sender()
         row = send_obj.senderSignalIndex // 10
         col = send_obj.senderSignalIndex % 10
         #print('row: {} col: {}'.format(row, col))
 
+        # 一つ右 右端なら1行下の左端へ移動
         next_row = (row + (col + 1) // 9) % 9
         next_col = (col + 1) % 9
         #print('next_row: {} next_col: {}'.format(next_row, next_col))
         self.works[next_row][next_col].setFocus()
 
 
-    def output(self):
+    def output(self): # テスト用に作ってたやつ
         print('clicked')
         self.cells[1][1][0].setStyleSheet('border: 1px solid red;')
 

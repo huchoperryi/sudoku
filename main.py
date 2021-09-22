@@ -27,7 +27,7 @@ class Window(SudokuWindow.MainWindow):
         self.SetTaskWorkGUI(self.works)
 
 
-    def SetTaskWorkGUI(self, input_grid):
+    def SetTaskWorkGUI(self, input_grid): # task/workにfield値を入れる
         
         for row in range(9):
             for col in range(9):
@@ -55,15 +55,21 @@ class Window(SudokuWindow.MainWindow):
         for row in range(9):
             for col in range(9):
                 for index in range(9):
-                    if (self.field.rows[row][col].value == index + 1 and
-                        self.field.rows[row][col].is_fixed == True):
-                        self.cells[row][col][index].setStyleSheet(redborder)
-                    elif self.field.rows[row][col].judge[index]:
-                        self.cells[row][col][index].setStyleSheet(skyblue)
+                    field_cell = self.field.rows[row][col]
+                    grid_cell = self.cells[row][col]
+
+                    if (field_cell.value == index + 1 and
+                        field_cell.is_fixed == True):
+                        grid_cell[index].setStyleSheet(redborder)
+                    elif field_cell.judge[index]:
+                        grid_cell[index].setStyleSheet(skyblue)
                     else:
-                        self.cells[row][col][index].setStyleSheet(grey)
+                        grid_cell[index].setStyleSheet(grey)
 
     def SolveTask(self):
+
+        self.field.Reset()
+
         for row in range(9):
             for col in range(9):
 
@@ -78,6 +84,7 @@ class Window(SudokuWindow.MainWindow):
                     print(msg.format(row, col, value))
         self.field.Solve()
         self.SetTaskWorkGUI(self.works)
+        self.ShowCandidate()
 
 
     def TaskSet(self):
@@ -89,8 +96,19 @@ class Window(SudokuWindow.MainWindow):
                 [0,4,0, 0,5,0, 0,0,9],
                 [4,0,0, 5,3,0, 0,2,0],
                 [0,0,1, 0,6,0, 8,0,0],
-                [0,0,0, 0,0,0, 5,0,0]]
+                [0,0,0, 0,0,0, 0,0,0]]
         return task
+        """
+               [[0,0,0, 0,0,0, 6,0,0],
+                [0,0,6, 0,1,0, 9,0,0],
+                [7,0,0, 8,2,0, 0,5,0],
+                [0,5,0, 0,4,0, 0,0,3],
+                [6,2,3, 1,0,7, 0,0,0],
+                [0,4,0, 0,5,0, 0,0,9],
+                [4,0,0, 5,3,0, 1,2,0], 6番目:1
+                [0,0,1, 0,6,0, 8,0,0],
+                [0,0,0, 0,0,0, 5,0,0]] 6番目:5 2か所入ると解ける
+        """
 
 
 
