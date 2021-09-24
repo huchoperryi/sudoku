@@ -72,6 +72,11 @@ class Window(SudokuWindow.MainWindow):
 
         for row in range(9):
             for col in range(9):
+                value = self.tasks[row][col].text()
+                self.works[row][col].setText(value)
+
+        for row in range(9):
+            for col in range(9):
 
                 value = self.works[row][col].text()
                 if value == '':
@@ -82,7 +87,9 @@ class Window(SudokuWindow.MainWindow):
                     self.field.rows[row][col].SetValue(value)
                     msg = 'set value row:{} col:{} value:{}'
                     print(msg.format(row, col, value))
-        self.field.Solve()
+        count = self.field.Solve()
+        if count != 0:
+            self.message_box.append('{} cells fixed!'.format(count))
         self.SetTaskWorkGUI(self.works)
         self.ShowCandidate()
 

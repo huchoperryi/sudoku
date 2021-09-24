@@ -6,6 +6,10 @@ import sip
 import time
 
 class MainWindow(QWidget):
+    # self.tasks[9][9] task set Qlineedit
+    # self.works[9][9] work set Qlineedit
+    # self.cells[9][9] display candidates
+
     def __init__(self, parent=None): # windowの初期生成
         super(MainWindow, self).__init__(parent)
 
@@ -25,11 +29,8 @@ class MainWindow(QWidget):
 
         self.work_backs = []
 
-
-            
         self.SetTaskGrid()
         self.SetWorkGrid()
-
 
         self.cell_backs = []
 
@@ -101,6 +102,9 @@ class MainWindow(QWidget):
 
         #self.cells[0].setStyleSheet("border: 1px solid red;")
 
+        self.message_box = QtWidgets.QTextEdit(self)
+        self.MainFrame.addWidget(self.message_box)
+
     def SetTaskGrid(self): # task入力欄の生成
 
         #self.input_grid = QGridLayout(self)
@@ -162,8 +166,10 @@ class MainWindow(QWidget):
         
         self.works[row][col].setText(value)
 
+        if (value != '' and value != ' '):
+            self.message_box.append('set task')
+
         self.SolveTask()
-        
 
 
     def GetList(self, cells): # task,workの値リストを返す
@@ -180,8 +186,6 @@ class MainWindow(QWidget):
                 cell_value.append(value)
             cell_values.append(cell_value)
         return cell_values
-
-
 
 
     def SetWorkGrid(self): # work入力欄の生成
