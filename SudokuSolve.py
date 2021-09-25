@@ -6,6 +6,9 @@ class SudokuCell():
 	value: cell fixed value
 	is_fixed: 
 	judge: bool x 9
+	SetValue():
+	FixCheck():
+	DelJudge():
 	"""
 	
 	def __init__(self):
@@ -37,18 +40,25 @@ class SudokuCell():
 			return 0
 			
 	def FixCheck(self):
-		
+		"""
+		return	: -1 すでに決定していた
+				: 0 決定せず
+				1-9 決定した
+		"""
 		count = 0
 		tmp_value = 0
 		if self.is_fixed:
-			return
+			return -1
 		for i in range(9):
 			if self.judge[i] == True:
 				count += 1
 				tmp_value = i
 		if count == 1:
 			self.SetValue(tmp_value + 1)
+			return tmp_value + 1
+		else:
 			return 0
+
 
 
 	def DelJudge(self, index):
@@ -56,7 +66,7 @@ class SudokuCell():
 		self.judge[index] = False
 	
 		if sum(self.judge) == 0:
-			print('all candidate delited.')
+			print('all candidate deleted.')
 		
 class SudokuField():
 	
@@ -140,6 +150,7 @@ class SudokuField():
 		
 	def ScanBlock(self, block):
 		
+		count = 0
 		for value in range(9):
 			count= 0
 			tmp_add = 0
@@ -161,23 +172,27 @@ class SudokuField():
 					print('')
 				"""
 				block[tmp_add].SetValue(value + 1)
+				count += 1
+		return count
 		
 		
 	def Solve(self):
 		check = 1
+		return_value = 0
 		
 		#while check > 0:
 		for i in range(10):
 			self.CutJudgeAll()
 			for i in range(9):
-				self.ScanBlock(self.rows[i])
-				self.ScanBlock(self.cols[i])
-				self.ScanBlock(self.areas[i])
+				check = self.ScanBlock(self.rows[i])
+				check +=self.ScanBlock(self.cols[i])
+				check += self.ScanBlock(self.areas[i])
 				
-			check = self.CheckAll()
+			check += self.CheckAll()
+			return_value += check
 			#print('{} cell fixed'.format(check))
 			#self.ShowWithCandidate()
-		
+		return return_value
 		
 	def SetTask(self, 
 		task =	[[0,0,0, 0,0,0, 9,0,0],

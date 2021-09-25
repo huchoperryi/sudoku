@@ -68,8 +68,16 @@ class Window(SudokuWindow.MainWindow):
 
     def SolveTask(self):
 
+        # 一度初期化する
         self.field.Reset()
 
+        # tasksの数値をworksにコピー
+        for row in range(9):
+            for col in range(9):
+                value = self.tasks[row][col].text()
+                self.works[row][col].setText(value)
+
+        # worksの数値をsolverにセット
         for row in range(9):
             for col in range(9):
 
@@ -82,7 +90,9 @@ class Window(SudokuWindow.MainWindow):
                     self.field.rows[row][col].SetValue(value)
                     msg = 'set value row:{} col:{} value:{}'
                     print(msg.format(row, col, value))
-        self.field.Solve()
+        count = self.field.Solve()
+        if count != 0:
+            self.message_box.append('{} cells fixed!'.format(count))
         self.SetTaskWorkGUI(self.works)
         self.ShowCandidate()
 
