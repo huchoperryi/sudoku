@@ -5,6 +5,19 @@ from PyQt5.QtWidgets import  *
 import sip
 import time
 
+class ClickableLabel(QLabel):
+
+    clicked = pyqtSignal()
+
+    def __init__(self, parent=None):
+        super(ClickableLabel, self).__init__(parent)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.clicked.emit()
+        return QLabel.mousePressEvent(self, event)
+
+
 class MainWindow(QWidget):
     # self.tasks[9][9] task set Qlineedit
     # self.works[9][9] work set Qlineedit
@@ -13,9 +26,6 @@ class MainWindow(QWidget):
     def __init__(self, parent=None): # windowの初期生成
         super(MainWindow, self).__init__(parent)
 
-        #self.setStyleSheet('background-color:red;')
-        style = 'background-color : skyblue;'
-            #"border: 1px solid black; "
 
         self.MainFrame = QHBoxLayout()
         self.InputFrame = QVBoxLayout()
@@ -29,64 +39,10 @@ class MainWindow(QWidget):
 
         self.work_backs = []
 
+        self.SetCellGrid()
         self.SetTaskGrid()
         self.SetWorkGrid()
 
-        self.cell_backs = []
-
-        for i in range(81):
-            cell_back = QLabel(self)
-            cell_back.move(
-                225 + i % 9 * 54 + (i % 9) // 3 * 9,
-                9 + i // 9 * 54 + (i // 9) // 3 * 9
-                )
-            cell_back.setFixedSize(53,53)
-            cell_back.setStyleSheet('background-color : #9090c0')
-            self.cell_backs.append(cell_back)
-            #self.WorkFrame.addWidget(cell_back)
-
-        # create 27 x 27 Labels and add to layout
-        self.cells = []
-        cell_width = 27
-        for row in range(9):
-            cols = []
-            for col in range(9):
-                indexs = []
-                for i in range(9):
-
-                    text = str(i + 1)
-                    index = QtWidgets.QLabel(self)
-                    index.setText(text)
-                    index.setFont(QtGui.QFont('Ricty Diminished Discord',10))
-                    index.setStyleSheet(style)
-                    index.setAlignment(Qt.AlignCenter)
-                    index.setFixedSize(12,12)
-                    indexs.append(index)
-                    self.grid.addWidget(index,
-                                        row * 3 + i // 3 + row // 3,
-                                        col * 3 + i % 3 + col // 3)
-
-                cols.append(indexs)
-            self.cells.append(cols)
-        
-        borders = []
-        border_style = "background-color : #4169e1"
-        #"border: 1px solid #1e90ff; " \
-        #             + "background-color : dadgerblue"
-        for i in range(2):
-            border = QtWidgets.QLabel(self)
-            border.setStyleSheet(border_style)
-            border.setFixedWidth(3)
-            self.grid.addWidget(border, 0, 9 + 10 * i , 29, 1)
-            borders.append(border)
-
-        for i in range(2):
-            
-            border = QtWidgets.QLabel(self)
-            border.setStyleSheet(border_style)
-            border.setFixedHeight(3)
-            self.grid.addWidget(border, 9 + 10 * i , 0, 1, 29)
-            borders.append(border)
 
 
         self.button = QPushButton('Show data', self)
@@ -98,12 +54,88 @@ class MainWindow(QWidget):
         self.setLayout(self.MainFrame)
 
         #self.setGeometry(300, 50, 400, 350)
-        self.setWindowTitle(('ViewSample'))
+        self.setWindowTitle(('Sudoku Solve'))
 
         #self.cells[0].setStyleSheet("border: 1px solid red;")
 
         self.message_box = QtWidgets.QTextEdit(self)
         self.MainFrame.addWidget(self.message_box)
+
+    def SetCellGrid(self):
+    
+        #self.setStyleSheet('background-color:red;')
+        style = 'background-color : skyblue;'
+            #"border: 1px solid black; "
+    
+        self.cell_backs = []
+    
+        for i in range(81):
+            cell_back = QLabel(self)
+            cell_back.move(
+                225 + i % 9 * 54 + (i % 9) // 3 * 9,
+                9 + i // 9 * 54 + (i // 9) // 3 * 9
+                )
+            cell_back.setFixedSize(53,53)
+            cell_back.setStyleSheet('background-color : #9090c0')
+            self.cell_backs.append(cell_back)
+            #self.WorkFrame.addWidget(cell_back)
+    
+        # create 27 x 27 Labels and add to layout
+        self.cells = []
+        cell_width = 27
+        for row in range(9):
+            cols = []
+            for col in range(9):
+                indexs = []
+                for i in range(9):
+                    text = str(i + 1)
+                    index = ClickableLabel(self)
+                    index.setText(text)
+                    index.setFont(QtGui.QFont('Ricty Diminished Discord',10))
+                    index.setStyleSheet(style)
+                    index.setAlignment(Qt.AlignCenter)
+                    index.setFixedSize(12,12)
+                    index.senderSignalIndex = 1000 + row * 100 + col * 10 + i
+                    index.clicked.connect(self.CellClicked)
+                    indexs.append(index)
+                    self.grid.addWidget(index,
+                                        row * 3 + i // 3 + row // 3,
+                                        col * 3 + i % 3 + col // 3)
+    
+                cols.append(indexs)
+            self.cells.append(cols)
+            
+        borders = []
+        border_style = "background-color : #4169e1"
+        #"border: 1px solid #1e90ff; " \
+        #             + "background-color : dadgerblue"
+        for i in range(2):
+            border = QtWidgets.QLabel(self)
+            border.setStyleSheet(border_style)
+            border.setFixedWidth(3)
+            self.grid.addWidget(border, 0, 9 + 10 * i , 29, 1)
+            borders.append(border)
+    
+        for i in range(2):
+            
+            border = QtWidgets.QLabel(self)
+            border.setStyleSheet(border_style)
+            border.setFixedHeight(3)
+            self.grid.addWidget(border, 9 + 10 * i , 0, 1, 29)
+            borders.append(border)
+    
+
+    def CellClicked(self):
+        send_obj = self.sender()
+        id = send_obj.senderSignalIndex
+        row = (id - 1000) // 100
+        col = (id % 100) // 10
+        index = id % 10
+        grey = 'background-color : grey'
+
+        self.message_box.append('Cell clicked row:{} col:{} index:{}'.format(row, col, index))
+        self.cells[row][col][index].setStyleSheet(grey)
+
 
     def SetTaskGrid(self): # task入力欄の生成
 

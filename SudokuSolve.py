@@ -40,18 +40,25 @@ class SudokuCell():
 			return 0
 			
 	def FixCheck(self):
-		
+		"""
+		return	: -1 すでに決定していた
+				: 0 決定せず
+				1-9 決定した
+		"""
 		count = 0
 		tmp_value = 0
 		if self.is_fixed:
-			return
+			return -1
 		for i in range(9):
 			if self.judge[i] == True:
 				count += 1
 				tmp_value = i
 		if count == 1:
 			self.SetValue(tmp_value + 1)
+			return tmp_value + 1
+		else:
 			return 0
+
 
 
 	def DelJudge(self, index):

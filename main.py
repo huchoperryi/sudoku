@@ -68,13 +68,16 @@ class Window(SudokuWindow.MainWindow):
 
     def SolveTask(self):
 
+        # 一度初期化する
         self.field.Reset()
 
+        # tasksの数値をworksにコピー
         for row in range(9):
             for col in range(9):
                 value = self.tasks[row][col].text()
                 self.works[row][col].setText(value)
 
+        # worksの数値をsolverにセット
         for row in range(9):
             for col in range(9):
 
