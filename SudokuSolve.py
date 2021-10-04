@@ -60,7 +60,6 @@ class SudokuCell():
 			return 0
 
 
-
 	def DelJudge(self, index):
 		
 		self.judge[index] = False
@@ -107,12 +106,15 @@ class SudokuField():
 			for j in range(9):
 				self.rows[i][j].SetValue(i * 9 + j + 1)
 		"""
+
+
 	def CutOtherJudge(self, block, no, value):
 		
 		for i in range(9):
 			
 			block[i]
 	
+
 	def CutJudge(self, row, col):
 		
 		if self.rows[row][col].value != ' ':
@@ -142,7 +144,7 @@ class SudokuField():
 		for i in range(9):
 			for j in range(9):
 				result = self.rows[i][j].FixCheck()
-				if result == 0:
+				if result > 0:
 					count += 1
 		#print('{} cell fixed'.format(count))
 		return count
@@ -194,6 +196,7 @@ class SudokuField():
 			#self.ShowWithCandidate()
 		return return_value
 		
+
 	def SetTask(self, 
 		task =	[[0,0,0, 0,0,0, 9,0,0],
 						 [0,0,0, 4,9,0, 0,0,6],
@@ -209,6 +212,7 @@ class SudokuField():
 			for j in range(9):
 				self.rows[i][j].SetValue(task[i][j])
 				
+
 	def Reset(self):
 
 		for row in range(9):
@@ -231,6 +235,7 @@ class SudokuField():
 			if row % 3 == 2 and row != 8:
 				print('---+---+---')
 				
+
 	def ShowWithCandidate(self):
 		print('Show with candidate')
 		for i in range(9):
